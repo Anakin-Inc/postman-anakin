@@ -1,0 +1,2098 @@
+{
+  "info": {
+    "_postman_id": "9f99b41b-8392-5cdc-97fd-eacc8dcda485",
+    "name": "Anakin API",
+    "description": "Every endpoint of the [Anakin](https://anakin.io) REST API: scrape any URL into Markdown, HTML or JSON, search the web, crawl and map sites, run agentic research, and call Wire actions across 940+ sites. Proxies, JavaScript rendering, anti-bot handling and CAPTCHA solving are done for you.\n\n## Get started\n\n1. Get an API key at [anakin.io/account](https://anakin.io/account#developer). New accounts get 300 free credits, no card required.\n2. Select the **Anakin** environment and paste the key into `apiKey` (keep it as a secret value).\n3. Send **URL Scraper / Scrape URL (inline)**.\n\nNo key yet? Requests marked \"No API key needed\" (Wire discovery, `wire-run`, inline scrape) work without one. See the **Anakin Quickstart** collection.\n\n## Authentication\n\nEvery request sends the `X-API-Key` header (set at collection level from `{{apiKey}}`).\n\n## Async jobs\n\nScrape, batch, map, crawl, agentic search and Wire tasks return a job id. Each submit request saves that id to a collection variable, so you can send the matching **Get ... result** request right after. Poll until `status` is `completed` or `failed`.\n\n## Links\n\n- [API reference](https://anakin.io/docs/api-reference)\n- [Error responses](https://anakin.io/docs/api-reference/error-responses)\n- [Pricing](https://anakin.io/pricing)\n- [MCP server](https://anakin.io/docs) (`https://mcp.anakin.io/mcp`)\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.anakin.io/v1"
+    },
+    {
+      "key": "catalogSlug",
+      "value": "hackernews"
+    },
+    {
+      "key": "scrapeJobId",
+      "value": ""
+    },
+    {
+      "key": "agenticSearchId",
+      "value": ""
+    },
+    {
+      "key": "mapJobId",
+      "value": ""
+    },
+    {
+      "key": "crawlJobId",
+      "value": ""
+    },
+    {
+      "key": "wireJobId",
+      "value": ""
+    },
+    {
+      "key": "identityId",
+      "value": ""
+    },
+    {
+      "key": "identitySourceId",
+      "value": ""
+    },
+    {
+      "key": "containerId",
+      "value": ""
+    },
+    {
+      "key": "providerToken",
+      "value": ""
+    },
+    {
+      "key": "monitorId",
+      "value": ""
+    },
+    {
+      "key": "snapshotId",
+      "value": ""
+    },
+    {
+      "key": "deliveryId",
+      "value": ""
+    },
+    {
+      "key": "aiVisibilitySearchId",
+      "value": ""
+    },
+    {
+      "key": "sessionId",
+      "value": ""
+    },
+    {
+      "key": "webhookId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "id": "e7d6bbb5-e307-5b31-8e82-da37b161c9bd",
+      "name": "URL Scraper",
+      "description": "Scrape a page into Markdown, cleaned HTML, or structured JSON. Handles proxies, JavaScript rendering, and anti-bot protection.",
+      "item": [
+        {
+          "id": "e9c92cd3-520f-5f83-a670-66769753a51e",
+          "name": "Scrape URL (inline)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/url-scraper/scrape",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "url-scraper",
+                "scrape"
+              ]
+            },
+            "description": "Scrape one URL and get the result in the same response, no polling. Works without an API key on the free Zero Touch trial; add `X-API-Key` for full limits.\n\nDocs: [https://anakin.io/docs/api-reference/url-scraper/scrape](https://anakin.io/docs/api-reference/url-scraper/scrape)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"country\": \"us\",\n  \"useBrowser\": false,\n  \"generateJson\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "78c08fa0-d24c-530f-bd6e-2654d61e5ebd",
+          "name": "Submit scrape job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/url-scraper",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "url-scraper"
+              ]
+            },
+            "description": "Submit an asynchronous scrape job. Returns a `jobId`; poll **Get scrape result**. The job id is saved to the `scrapeJobId` collection variable.\n\nDocs: [https://anakin.io/docs/api-reference/url-scraper/submit-scrape-job](https://anakin.io/docs/api-reference/url-scraper/submit-scrape-job)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"country\": \"us\",\n  \"useBrowser\": false,\n  \"generateJson\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.jobId;",
+                  "if (value) { pm.collectionVariables.set('scrapeJobId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "19855a3a-cafc-5a73-9214-cc17a08f39d5",
+          "name": "Submit batch scrape job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/url-scraper/batch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "url-scraper",
+                "batch"
+              ]
+            },
+            "description": "Scrape up to many URLs in one job. Poll **Get scrape result** with the returned `jobId`.\n\nDocs: [https://anakin.io/docs/api-reference/url-scraper/batch-url-scraping](https://anakin.io/docs/api-reference/url-scraper/batch-url-scraping)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urls\": [\n    \"https://example.com/page1\",\n    \"https://example.com/page2\"\n  ],\n  \"country\": \"us\",\n  \"useBrowser\": false,\n  \"generateJson\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.jobId;",
+                  "if (value) { pm.collectionVariables.set('scrapeJobId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2b3628b9-ed1d-5144-a015-a0b788557ddc",
+          "name": "Get scrape result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/url-scraper/{{scrapeJobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "url-scraper",
+                "{{scrapeJobId}}"
+              ]
+            },
+            "description": "Poll a scrape or batch job. `status` moves from `pending`/`processing` to `completed` or `failed`.\n\nDocs: [https://anakin.io/docs/api-reference/url-scraper/get-job-status](https://anakin.io/docs/api-reference/url-scraper/get-job-status)"
+          },
+          "response": []
+        },
+        {
+          "id": "16675b59-5c30-5114-b062-9e71c6076c7d",
+          "name": "Download screenshot",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/url-scraper/{{scrapeJobId}}/screenshot",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "url-scraper",
+                "{{scrapeJobId}}",
+                "screenshot"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "fullpage",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Download the screenshot captured for a scrape job. Use `type=fullpage` for a full-page capture.\n\nDocs: [https://anakin.io/docs/api-reference/url-scraper/get-screenshot](https://anakin.io/docs/api-reference/url-scraper/get-screenshot)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "55575749-9ca4-5e7d-bbed-1063132eaa6d",
+      "name": "Search",
+      "description": "Web search that returns results with extracted page content.",
+      "item": [
+        {
+          "id": "d079f6c0-f517-5cb8-a8f1-7fd901e8b18e",
+          "name": "Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "search"
+              ]
+            },
+            "description": "Run a web search and get results with content, synchronously.\n\nDocs: [https://anakin.io/docs/api-reference/search/search](https://anakin.io/docs/api-reference/search/search)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"latest AI developments\",\n  \"limit\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "1df427e7-5748-51f0-825a-b4545886f22d",
+      "name": "Agentic Search",
+      "description": "Multi-stage AI research pipeline: search, read, and synthesize an answer with sources.",
+      "item": [
+        {
+          "id": "bdbf0fca-fb29-5705-923d-16692aed4dff",
+          "name": "Submit research query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agentic-search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agentic-search"
+              ]
+            },
+            "description": "Start an agentic research job. The `job_id` is saved to `agenticSearchId`.\n\nDocs: [https://anakin.io/docs/api-reference/agentic-search/submit-search](https://anakin.io/docs/api-reference/agentic-search/submit-search)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"Comprehensive analysis of quantum computing trends\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.job_id ?? body?.jobId ?? body?.id;",
+                  "if (value) { pm.collectionVariables.set('agenticSearchId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0b3d8b51-97e6-5adf-974d-ef8f7b32b5e9",
+          "name": "Get research result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agentic-search/{{agenticSearchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agentic-search",
+                "{{agenticSearchId}}"
+              ]
+            },
+            "description": "Poll the research job until `status` is `completed`.\n\nDocs: [https://anakin.io/docs/api-reference/agentic-search/get-search-result](https://anakin.io/docs/api-reference/agentic-search/get-search-result)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "ffb04911-83ca-5bc7-a8cb-3dbd5635016d",
+      "name": "Map",
+      "description": "Discover every URL on a website.",
+      "item": [
+        {
+          "id": "9c1134dc-3b0a-562d-88d9-79ef7a682c2a",
+          "name": "Submit map job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/map",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "map"
+              ]
+            },
+            "description": "Start a URL discovery job. The `jobId` is saved to `mapJobId`.\n\nDocs: [https://anakin.io/docs/api-reference/map/submit-map-job](https://anakin.io/docs/api-reference/map/submit-map-job)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"includeSubdomains\": false,\n  \"limit\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.jobId;",
+                  "if (value) { pm.collectionVariables.set('mapJobId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2fcfd7ce-1ab1-56b1-8cfe-95e1caa33551",
+          "name": "Get map result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/map/{{mapJobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "map",
+                "{{mapJobId}}"
+              ]
+            },
+            "description": "Poll the map job for the discovered URLs.\n\nDocs: [https://anakin.io/docs/api-reference/map/get-map-result](https://anakin.io/docs/api-reference/map/get-map-result)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "6bc32540-dd53-5786-92d6-04d956e64d92",
+      "name": "Crawl",
+      "description": "Crawl a website and extract content from each page.",
+      "item": [
+        {
+          "id": "735f4807-a7b6-5fbe-8811-e7914290ffee",
+          "name": "Submit crawl job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/crawl",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crawl"
+              ]
+            },
+            "description": "Start a crawl. The `jobId` is saved to `crawlJobId`.\n\nDocs: [https://anakin.io/docs/api-reference/crawl/submit-crawl-job](https://anakin.io/docs/api-reference/crawl/submit-crawl-job)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"maxPages\": 20,\n  \"includePatterns\": [\n    \"/blog/*\"\n  ],\n  \"country\": \"us\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.jobId;",
+                  "if (value) { pm.collectionVariables.set('crawlJobId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "3f86b99b-b462-5ee2-ae91-5071ff5f54a2",
+          "name": "Get crawl result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/crawl/{{crawlJobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crawl",
+                "{{crawlJobId}}"
+              ]
+            },
+            "description": "Poll the crawl job for page results.\n\nDocs: [https://anakin.io/docs/api-reference/crawl/get-crawl-result](https://anakin.io/docs/api-reference/crawl/get-crawl-result)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "d9d5600d-60a9-57c8-bc00-9438798d5607",
+      "name": "Wire / Discovery",
+      "description": "Wire turns 940+ sites into API actions. Discovery is public: no API key needed.",
+      "item": [
+        {
+          "id": "dec79a3d-8821-55b3-a71b-423f6dae6e9e",
+          "name": "Resolve actions by intent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/resolve?q=hacker news top stories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "hacker news top stories"
+                }
+              ]
+            },
+            "description": "Find Wire actions for a plain-language intent. Returns `action_id`s and their params. No API key needed.\n\nDocs: [https://anakin.io/docs/api-reference/wire/search-actions](https://anakin.io/docs/api-reference/wire/search-actions)",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "f89a2628-73ec-5f4b-b5fa-2314956ac84b",
+          "name": "List catalogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/catalog",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "catalog"
+              ]
+            },
+            "description": "List every site Wire supports. No API key needed.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-catalogs](https://anakin.io/docs/api-reference/wire/list-catalogs)",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "21b62547-ba07-5602-9c71-527444e39479",
+          "name": "Get catalog details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/catalog/{{catalogSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "catalog",
+                "{{catalogSlug}}"
+              ]
+            },
+            "description": "Actions, parameters, credit cost, and auth requirement for one site. No API key needed.\n\nDocs: [https://anakin.io/docs/api-reference/wire/get-catalog](https://anakin.io/docs/api-reference/wire/get-catalog)",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "f7a750da-f9b1-586b-a351-fe4261678570",
+      "name": "Wire / Run",
+      "description": "Run Wire actions. `wire-run` is the synchronous, keyless, read-only mode; `wire/task` is the keyed, asynchronous mode for write actions and account-connected runs.",
+      "item": [
+        {
+          "id": "2b89c99a-f28d-55c9-9102-ee817ca8efcc",
+          "name": "Run read-only action (no key)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire-run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire-run"
+              ]
+            },
+            "description": "Run a read-only Wire action synchronously with no API key. The result comes back inline.\n\nDocs: [https://anakin.io/docs/api-reference/wire](https://anakin.io/docs/api-reference/wire)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action_id\": \"hn_stories\",\n  \"params\": {\n    \"limit\": 5\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "e10abc39-aa18-50f3-a264-da9df3e25e68",
+          "name": "Execute task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire/task",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "task"
+              ]
+            },
+            "description": "Run any Wire action asynchronously. Auth-gated actions need a `credential_id` (see **Wire / Identities**). The `job_id` is saved to `wireJobId`.\n\nDocs: [https://anakin.io/docs/api-reference/wire/execute-task](https://anakin.io/docs/api-reference/wire/execute-task)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action_id\": \"hn_stories\",\n  \"params\": {\n    \"limit\": 5\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.job_id ?? body?.jobId;",
+                  "if (value) { pm.collectionVariables.set('wireJobId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "bef8d4fc-8a61-53d1-ab33-7b90c61abde1",
+          "name": "Get job status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/jobs/{{wireJobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "jobs",
+                "{{wireJobId}}"
+              ]
+            },
+            "description": "Poll a Wire job (about once a second, capped at 60/min per user).\n\nDocs: [https://anakin.io/docs/api-reference/wire/get-job](https://anakin.io/docs/api-reference/wire/get-job)"
+          },
+          "response": []
+        },
+        {
+          "id": "e6146247-61cf-5172-9acc-a205efd727ae",
+          "name": "Download job file",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/jobs/{{wireJobId}}/download",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "jobs",
+                "{{wireJobId}}",
+                "download"
+              ]
+            },
+            "description": "Download the file produced by a Wire job, when the action returns one.\n\nDocs: [https://anakin.io/docs/api-reference/wire/get-job-download](https://anakin.io/docs/api-reference/wire/get-job-download)"
+          },
+          "response": []
+        },
+        {
+          "id": "a166e6e5-2d71-5167-af6f-7e952f6f8ecf",
+          "name": "Request a new action",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire/build-request",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "build-request"
+              ]
+            },
+            "description": "Ask Anakin to build a Wire action for a site that is not in the catalog yet.\n\nDocs: [https://anakin.io/docs/api-reference/wire/create-build-request](https://anakin.io/docs/api-reference/wire/create-build-request)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"website_url\": \"https://example.com\",\n  \"goal\": \"Extract product name, price, and availability from a product page\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "a1e7b075-e900-5310-9ba6-4fb06d0ced72",
+      "name": "Wire / Identities",
+      "description": "Identities let Wire run actions on sites that need a login. Credentials are never stored as plaintext.",
+      "item": [
+        {
+          "id": "da0f5fda-6fd9-57a5-9788-ea55e0b0fcf6",
+          "name": "Create identity (login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "login"
+              ]
+            },
+            "description": "Log in to a site to create an identity whose `credential_id` you pass to **Execute task**.\n\nDocs: [https://anakin.io/docs/api-reference/wire/login](https://anakin.io/docs/api-reference/wire/login)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catalog_slug\": \"{{catalogSlug}}\",\n  \"params\": {\n    \"email\": \"you@example.com\",\n    \"password\": \"your_password\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "fea6d4e2-3ede-5964-97a0-cfe5689cc48e",
+          "name": "List identities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identities"
+              ]
+            },
+            "description": "List your identities.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-identities](https://anakin.io/docs/api-reference/wire/list-identities)"
+          },
+          "response": []
+        },
+        {
+          "id": "f0b7013b-38d6-5e4c-a1b2-9131dace67ec",
+          "name": "Get identity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identities/{{identityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identities",
+                "{{identityId}}"
+              ]
+            },
+            "description": "Get one identity.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-identities](https://anakin.io/docs/api-reference/wire/list-identities)"
+          },
+          "response": []
+        },
+        {
+          "id": "ab9f4a8c-0bfd-5693-b09e-f4f222cfc305",
+          "name": "Verify identity (re-login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire/credentials/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "credentials",
+                "verify"
+              ]
+            },
+            "description": "Check an identity still works, re-authenticating if needed.\n\nDocs: [https://anakin.io/docs/api-reference/wire/verify-credential](https://anakin.io/docs/api-reference/wire/verify-credential)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identity_id\": \"{{identityId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "ea7410ae-87ef-52e3-bcfc-e3ddfc7583b6",
+      "name": "Wire / Identity Sources",
+      "description": "Connect a password manager (for example 1Password) so Wire can log in with credentials you already store there.",
+      "item": [
+        {
+          "id": "5913038e-6e5a-5748-9654-97d27030c22a",
+          "name": "List providers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/providers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "providers"
+              ]
+            },
+            "description": "Supported identity source providers.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-providers](https://anakin.io/docs/api-reference/wire/list-providers)"
+          },
+          "response": []
+        },
+        {
+          "id": "cba52f29-51e7-54f9-b843-19f498948a02",
+          "name": "Connect source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources"
+              ]
+            },
+            "description": "Connect a provider. The source `id` is saved to `identitySourceId`.\n\nDocs: [https://anakin.io/docs/api-reference/wire/create-identity-source](https://anakin.io/docs/api-reference/wire/create-identity-source)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider\": \"1password\",\n  \"display_name\": \"Engineering vault\",\n  \"token\": \"{{providerToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.id;",
+                  "if (value) { pm.collectionVariables.set('identitySourceId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "25b66741-3514-56ec-a14e-edaec9a4b0f5",
+          "name": "List sources",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources"
+              ]
+            },
+            "description": "List connected sources.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-identity-sources](https://anakin.io/docs/api-reference/wire/list-identity-sources)"
+          },
+          "response": []
+        },
+        {
+          "id": "5dc801c2-15ea-5744-ad86-52600b05014c",
+          "name": "Get source",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}"
+              ]
+            },
+            "description": "Get one source.\n\nDocs: [https://anakin.io/docs/api-reference/wire/get-identity-source](https://anakin.io/docs/api-reference/wire/get-identity-source)"
+          },
+          "response": []
+        },
+        {
+          "id": "1bd44bfa-1409-56b1-ae47-f34977f08334",
+          "name": "Rename or rotate source",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}"
+              ]
+            },
+            "description": "Rename a source or rotate its token.\n\nDocs: [https://anakin.io/docs/api-reference/wire/update-identity-source](https://anakin.io/docs/api-reference/wire/update-identity-source)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"display_name\": \"Engineering vault (prod)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "ffa9b067-ffe4-592c-878b-427b93f696ae",
+          "name": "Verify source",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}",
+                "verify"
+              ]
+            },
+            "description": "Check the source's token still works.\n\nDocs: [https://anakin.io/docs/api-reference/wire/verify-identity-source](https://anakin.io/docs/api-reference/wire/verify-identity-source)"
+          },
+          "response": []
+        },
+        {
+          "id": "0ae0a2d6-910f-5c25-b9c8-957cf1d57b12",
+          "name": "List containers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}/containers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}",
+                "containers"
+              ]
+            },
+            "description": "List vaults or folders in a source.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-source-containers](https://anakin.io/docs/api-reference/wire/list-source-containers)"
+          },
+          "response": []
+        },
+        {
+          "id": "486a73ed-c404-54e1-a8a9-95153da641f9",
+          "name": "List entries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}/containers/{{containerId}}/entries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}",
+                "containers",
+                "{{containerId}}",
+                "entries"
+              ]
+            },
+            "description": "List entries in a container.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-source-entries](https://anakin.io/docs/api-reference/wire/list-source-entries)"
+          },
+          "response": []
+        },
+        {
+          "id": "aca4cb1d-0aa4-53ff-a084-f3b6bd1181de",
+          "name": "Identities using a source",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}/identities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}",
+                "identities"
+              ]
+            },
+            "description": "List identities built from this source.\n\nDocs: [https://anakin.io/docs/api-reference/wire/list-source-identities](https://anakin.io/docs/api-reference/wire/list-source-identities)"
+          },
+          "response": []
+        },
+        {
+          "id": "2eb46e0c-d311-578d-92d9-ab671f671159",
+          "name": "Disconnect source",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/identity-sources/{{identitySourceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "identity-sources",
+                "{{identitySourceId}}"
+              ]
+            },
+            "description": "Disconnect a source.\n\nDocs: [https://anakin.io/docs/api-reference/wire/delete-identity-source](https://anakin.io/docs/api-reference/wire/delete-identity-source)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "7884d1fc-5c24-58e1-b4ae-78840ecbd271",
+      "name": "Monitoring",
+      "description": "Watch a page or a whole site and get alerted when it changes.",
+      "item": [
+        {
+          "id": "fd1440f3-2ace-5526-99a4-2b07e2f1e577",
+          "name": "Create monitor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/monitors",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors"
+              ]
+            },
+            "description": "Create a monitor. The `id` is saved to `monitorId`.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/create-monitor](https://anakin.io/docs/api-reference/monitoring/create-monitor)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/product/123\",\n  \"watchMode\": \"specific_data\",\n  \"outputSchema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"price\": {\n        \"type\": \"number\"\n      }\n    },\n    \"required\": [\n      \"price\"\n    ]\n  },\n  \"intervalMinutes\": 60,\n  \"alertWebhookUrl\": \"https://your-app.com/hooks/anakin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.id ?? body?.monitor?.id;",
+                  "if (value) { pm.collectionVariables.set('monitorId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "fd52a5a1-f612-53e1-b6ac-e122bf4a500b",
+          "name": "List monitors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors"
+              ]
+            },
+            "description": "List your monitors.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/list-monitors](https://anakin.io/docs/api-reference/monitoring/list-monitors)"
+          },
+          "response": []
+        },
+        {
+          "id": "2da358bf-6c4b-57be-a460-ef400b999aa3",
+          "name": "Get monitor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}"
+              ]
+            },
+            "description": "Get one monitor.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/list-monitors](https://anakin.io/docs/api-reference/monitoring/list-monitors)"
+          },
+          "response": []
+        },
+        {
+          "id": "83b257a4-7e99-5be0-97a0-f64ac6a29b7a",
+          "name": "Update monitor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}"
+              ]
+            },
+            "description": "Replace a monitor's configuration.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/update-monitor](https://anakin.io/docs/api-reference/monitoring/update-monitor)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/product/123\",\n  \"watchMode\": \"full_page\",\n  \"intervalMinutes\": 240\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "e1e26421-f0ba-58b3-a511-ed2372796e79",
+          "name": "Run now",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "run"
+              ]
+            },
+            "description": "Trigger a check immediately.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/control-monitor](https://anakin.io/docs/api-reference/monitoring/control-monitor)"
+          },
+          "response": []
+        },
+        {
+          "id": "2f3f91f3-8b15-59a8-844c-300915435ef0",
+          "name": "Pause",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/pause",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "pause"
+              ]
+            },
+            "description": "Pause a monitor.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/control-monitor](https://anakin.io/docs/api-reference/monitoring/control-monitor)"
+          },
+          "response": []
+        },
+        {
+          "id": "e62ac823-5084-566d-8bcb-b746034d7a78",
+          "name": "Resume",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/resume",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "resume"
+              ]
+            },
+            "description": "Resume a monitor. Optionally send `{\"expiresAt\": \"YYYY-MM-DD\"}` to set an end date.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/control-monitor](https://anakin.io/docs/api-reference/monitoring/control-monitor)"
+          },
+          "response": []
+        },
+        {
+          "id": "ad46e261-354f-50db-95e4-c143b72e9cee",
+          "name": "Set end date",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/expiry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "expiry"
+              ]
+            },
+            "description": "Change only the end date. Send `null` to run indefinitely.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/control-monitor](https://anakin.io/docs/api-reference/monitoring/control-monitor)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expiresAt\": \"2026-12-31\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "6edc77cf-f693-52ad-8ec0-edeec63a362d",
+          "name": "List changes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "changes"
+              ]
+            },
+            "description": "Detected changes.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/snapshots-and-changes](https://anakin.io/docs/api-reference/monitoring/snapshots-and-changes)"
+          },
+          "response": []
+        },
+        {
+          "id": "a24b6e68-463d-5e77-b3e2-089e726338de",
+          "name": "List snapshots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/snapshots",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "snapshots"
+              ]
+            },
+            "description": "Stored snapshots.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/snapshots-and-changes](https://anakin.io/docs/api-reference/monitoring/snapshots-and-changes)"
+          },
+          "response": []
+        },
+        {
+          "id": "12202f93-ed62-5f3f-916a-b077f57110df",
+          "name": "Get snapshot content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/snapshots/{{snapshotId}}/content",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "snapshots",
+                "{{snapshotId}}",
+                "content"
+              ]
+            },
+            "description": "Content of one snapshot.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/snapshots-and-changes](https://anakin.io/docs/api-reference/monitoring/snapshots-and-changes)"
+          },
+          "response": []
+        },
+        {
+          "id": "e6872168-b4d4-5b44-b1cf-22b7cb754dfd",
+          "name": "List site runs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/runs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "runs"
+              ]
+            },
+            "description": "Runs of a site monitor.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/site-monitors](https://anakin.io/docs/api-reference/monitoring/site-monitors)"
+          },
+          "response": []
+        },
+        {
+          "id": "e287049e-cd1b-50bf-b6b2-0d7265f11b82",
+          "name": "List site pages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/pages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "pages"
+              ]
+            },
+            "description": "Pages tracked by a site monitor.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/site-monitors](https://anakin.io/docs/api-reference/monitoring/site-monitors)"
+          },
+          "response": []
+        },
+        {
+          "id": "660ddef2-70ff-5b95-ba1b-bb69d58247ed",
+          "name": "Send test alert",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/test-alert",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "test-alert"
+              ]
+            },
+            "description": "Send a test alert to the monitor's destinations.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/alerts](https://anakin.io/docs/api-reference/monitoring/alerts)"
+          },
+          "response": []
+        },
+        {
+          "id": "0c999e65-9cd4-5723-b623-6e7e143ec63e",
+          "name": "List alert deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/deliveries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "deliveries"
+              ]
+            },
+            "description": "Alert delivery attempts.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/alerts](https://anakin.io/docs/api-reference/monitoring/alerts)"
+          },
+          "response": []
+        },
+        {
+          "id": "6bfafe8d-429b-5f0d-a16a-68fcaf276c16",
+          "name": "Retry alert delivery",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}/deliveries/{{deliveryId}}/retry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}",
+                "deliveries",
+                "{{deliveryId}}",
+                "retry"
+              ]
+            },
+            "description": "Retry one alert delivery.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/alerts](https://anakin.io/docs/api-reference/monitoring/alerts)"
+          },
+          "response": []
+        },
+        {
+          "id": "7767c13a-646c-594f-888e-fb7dbd2e75cc",
+          "name": "Delete monitor",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitors/{{monitorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "monitors",
+                "{{monitorId}}"
+              ]
+            },
+            "description": "Delete a monitor.\n\nDocs: [https://anakin.io/docs/api-reference/monitoring/update-monitor](https://anakin.io/docs/api-reference/monitoring/update-monitor)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "07825748-6812-578e-8390-4f49d170b86b",
+      "name": "AI Visibility",
+      "description": "See what ChatGPT, Gemini, Perplexity and other AI engines answer for a query.",
+      "item": [
+        {
+          "id": "5885c3e4-bcc3-5676-880b-0f49a12c5b69",
+          "name": "List sources",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ai-visibility/sources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-visibility",
+                "sources"
+              ]
+            },
+            "description": "Supported AI engines.\n\nDocs: [https://anakin.io/docs/api-reference/ai-visibility/list-sources](https://anakin.io/docs/api-reference/ai-visibility/list-sources)"
+          },
+          "response": []
+        },
+        {
+          "id": "46988da6-b0f6-5a3a-8a0d-56415f2a0743",
+          "name": "Submit search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai-visibility/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-visibility",
+                "search"
+              ]
+            },
+            "description": "Ask several AI engines the same query. The `search_id` is saved to `aiVisibilitySearchId`.\n\nDocs: [https://anakin.io/docs/api-reference/ai-visibility/submit-search](https://anakin.io/docs/api-reference/ai-visibility/submit-search)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Best coding agents in 2026\",\n  \"sources\": [\n    \"chatgpt\",\n    \"gemini\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.search_id ?? body?.id;",
+                  "if (value) { pm.collectionVariables.set('aiVisibilitySearchId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "064d0574-efef-506b-9f38-8993ce7b03a7",
+          "name": "Get search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ai-visibility/search/{{aiVisibilitySearchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-visibility",
+                "search",
+                "{{aiVisibilitySearchId}}"
+              ]
+            },
+            "description": "Poll results per source.\n\nDocs: [https://anakin.io/docs/api-reference/ai-visibility/get-search](https://anakin.io/docs/api-reference/ai-visibility/get-search)"
+          },
+          "response": []
+        },
+        {
+          "id": "639acdf4-7ea3-53b4-bd2a-d56a3d86e6d1",
+          "name": "List searches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ai-visibility/searches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-visibility",
+                "searches"
+              ]
+            },
+            "description": "Your past searches.\n\nDocs: [https://anakin.io/docs/api-reference/ai-visibility/list-searches](https://anakin.io/docs/api-reference/ai-visibility/list-searches)"
+          },
+          "response": []
+        },
+        {
+          "id": "d7615e67-bc4b-5cae-8555-1f88b8040850",
+          "name": "Retry source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai-visibility/search/{{aiVisibilitySearchId}}/retry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-visibility",
+                "search",
+                "{{aiVisibilitySearchId}}",
+                "retry"
+              ]
+            },
+            "description": "Retry one engine that failed.\n\nDocs: [https://anakin.io/docs/api-reference/ai-visibility/retry-source](https://anakin.io/docs/api-reference/ai-visibility/retry-source)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source\": \"gemini\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "6a4f33aa-8117-58fb-9ac7-307f4bdf830c",
+      "name": "Browser Sessions",
+      "description": "Saved browser sessions for scraping pages behind a login.",
+      "item": [
+        {
+          "id": "911a3ee8-f9ff-5bfe-a20b-0501808d20d7",
+          "name": "List sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sessions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions"
+              ]
+            },
+            "description": "List saved sessions.\n\nDocs: [https://anakin.io/docs/api-reference/browser-sessions](https://anakin.io/docs/api-reference/browser-sessions)"
+          },
+          "response": []
+        },
+        {
+          "id": "d919071e-e5eb-51be-bf2a-d36956abe82d",
+          "name": "Rename session",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{sessionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{sessionId}}"
+              ]
+            },
+            "description": "Rename a saved session.\n\nDocs: [https://anakin.io/docs/api-reference/browser-sessions](https://anakin.io/docs/api-reference/browser-sessions)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"new-session-name\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "7006b39f-5862-55de-a6bc-b15315faa320",
+          "name": "Delete session",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{sessionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{sessionId}}"
+              ]
+            },
+            "description": "Delete a saved session.\n\nDocs: [https://anakin.io/docs/api-reference/browser-sessions](https://anakin.io/docs/api-reference/browser-sessions)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "83bfca53-e98f-5dae-9e82-e67a774ea50b",
+      "name": "Webhooks",
+      "description": "Get job and monitor events pushed to your endpoint instead of polling.",
+      "item": [
+        {
+          "id": "a1155630-9c9a-51fa-a2a9-040ccfbe100f",
+          "name": "List event types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "events"
+              ]
+            },
+            "description": "Event types you can subscribe to.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/events](https://anakin.io/docs/api-reference/webhooks/events)"
+          },
+          "response": []
+        },
+        {
+          "id": "6534c52b-cc54-5cbd-aaac-5d71e2c10184",
+          "name": "Create endpoint",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks"
+              ]
+            },
+            "description": "Register an endpoint. The `id` is saved to `webhookId`.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://your-app.com/hooks/anakin\",\n  \"description\": \"Production receiver\",\n  \"events\": [\n    \"job.completed\",\n    \"job.failed\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.id;",
+                  "if (value) { pm.collectionVariables.set('webhookId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "333dd560-211e-58b4-8c33-ad2dbbb89135",
+          "name": "List endpoints",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks"
+              ]
+            },
+            "description": "List endpoints.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "939380c1-5a63-5b70-aaa8-2113582db5b3",
+          "name": "Update endpoint",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/{{webhookId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "{{webhookId}}"
+              ]
+            },
+            "description": "Change events or disable an endpoint.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"events\": [\n    \"job.completed\",\n    \"job.failed\",\n    \"monitor.change\"\n  ],\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "676af464-62ab-5431-aada-840ac24ac3f9",
+          "name": "Send test event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/{{webhookId}}/test",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "{{webhookId}}",
+                "test"
+              ]
+            },
+            "description": "Send a test event.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "f4088c50-a417-58a4-8323-e74daa39a98c",
+          "name": "List endpoint deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/{{webhookId}}/deliveries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "{{webhookId}}",
+                "deliveries"
+              ]
+            },
+            "description": "Deliveries to one endpoint.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "6b6eb354-87ea-5106-98b6-ae9fd06115ae",
+          "name": "List all deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/deliveries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "deliveries"
+              ]
+            },
+            "description": "Deliveries across endpoints.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "5c637c6a-beaa-5f5f-9764-11388819b255",
+          "name": "Resend delivery",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/deliveries/{{deliveryId}}/resend",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "deliveries",
+                "{{deliveryId}}",
+                "resend"
+              ]
+            },
+            "description": "Resend one delivery.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "57f5d8ea-76c0-5a4e-af9c-66cfc92f4182",
+          "name": "Get signing secret",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/signing-secret",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "signing-secret"
+              ]
+            },
+            "description": "Secret used to sign webhook payloads.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "65ec01c2-8ebd-5b15-b743-1abb227fc49e",
+          "name": "Rotate signing secret",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/signing-secret/rotate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "signing-secret",
+                "rotate"
+              ]
+            },
+            "description": "Rotate the signing secret.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        },
+        {
+          "id": "62680e11-5c4e-5a82-bb18-213efc4f3188",
+          "name": "Delete endpoint",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/{{webhookId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "{{webhookId}}"
+              ]
+            },
+            "description": "Delete an endpoint.\n\nDocs: [https://anakin.io/docs/api-reference/webhooks/managing-endpoints](https://anakin.io/docs/api-reference/webhooks/managing-endpoints)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
