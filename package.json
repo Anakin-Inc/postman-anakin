@@ -1,0 +1,12 @@
+{
+  "name": "postman-anakin",
+  "private": true,
+  "description": "Anakin Postman collections for the Postman API Network",
+  "scripts": {
+    "build": "python3 scripts/build.py",
+    "test": "sh scripts/test.sh"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1"
+  }
+}

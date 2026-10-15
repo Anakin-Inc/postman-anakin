@@ -1,0 +1,324 @@
+{
+  "info": {
+    "_postman_id": "f9a233d6-a286-5151-a4ee-3a979ad4bcc5",
+    "name": "Anakin Quickstart",
+    "description": "Get your first [Anakin](https://anakin.io) result in under a minute, without signing up.\n\nAnakin is a web data API: scrape any URL into Markdown or JSON, search the web, crawl sites, and run pre-built Wire actions on 940+ sites.\n\n**Folder 1** works with no API key: scrape a page, find a Wire action by describing what you want, and run it.\n\n**Folder 2** needs a key. Get one at [anakin.io/account](https://anakin.io/account#developer) (300 free credits, no card), then set `apiKey` in the **Anakin** environment.\n\nFor every endpoint, fork the **Anakin API** collection. Full docs: [anakin.io/docs](https://anakin.io/docs/api-reference).\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.anakin.io/v1"
+    },
+    {
+      "key": "catalogSlug",
+      "value": "hackernews"
+    },
+    {
+      "key": "crawlJobId",
+      "value": ""
+    },
+    {
+      "key": "actionId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "id": "1f8e6aa5-7b6e-5988-a418-304b6f959ea2",
+      "name": "1. No key needed",
+      "description": "These requests run on Anakin's free, no-signup Zero Touch tier. Send them in order.",
+      "item": [
+        {
+          "id": "d41517d9-6951-5ad3-b335-b7b660b506c2",
+          "name": "Scrape a page to Markdown",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/url-scraper/scrape",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "url-scraper",
+                "scrape"
+              ]
+            },
+            "description": "Scrape any URL and get clean Markdown back in the same response. No API key: the response carries `trial.remaining_credits` and a signup link.\n\nDocs: [https://anakin.io/docs/api-reference/url-scraper/scrape](https://anakin.io/docs/api-reference/url-scraper/scrape)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));",
+                  "pm.test('Has markdown', () => pm.expect(pm.response.json().markdown).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "0372d703-f6ff-5a1a-a2ff-c6e8b19e04cb",
+          "name": "Find a Wire action by intent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/wire/resolve?q=hacker news top stories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire",
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "hacker news top stories"
+                }
+              ]
+            },
+            "description": "Describe what you want in plain language; Wire returns matching `action_id`s and their params. The first `action_id` is saved to `actionId`.\n\nDocs: [https://anakin.io/docs/api-reference/wire/search-actions](https://anakin.io/docs/api-reference/wire/search-actions)",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));",
+                  "const results = pm.response.json().results || [];",
+                  "pm.test('Has results', () => pm.expect(results.length).to.be.above(0));",
+                  "if (results.length) { pm.collectionVariables.set('actionId', results[0].action_id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "2ffa5020-bc0f-5651-9c65-22c048ca9b65",
+          "name": "Run the action",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wire-run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wire-run"
+              ]
+            },
+            "description": "Run a read-only Wire action synchronously with no API key. Change `params` to match the action you picked.\n\nDocs: [https://anakin.io/docs/api-reference/wire](https://anakin.io/docs/api-reference/wire)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action_id\": \"hn_stories\",\n  \"params\": {\n    \"limit\": 5\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a1d53327-0a5c-5280-950e-721a6b6150aa",
+      "name": "2. With your API key",
+      "description": "Set `apiKey` in the Anakin environment (get one at https://anakin.io/account#developer, 300 free credits).",
+      "item": [
+        {
+          "id": "9220b49d-e693-56c7-b595-b7ebb1f78dcc",
+          "name": "Search the web",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "search"
+              ]
+            },
+            "description": "Web search with page content in one call.\n\nDocs: [https://anakin.io/docs/api-reference/search/search](https://anakin.io/docs/api-reference/search/search)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"latest AI developments\",\n  \"limit\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "42f7052b-c955-5d54-ab69-b3c35641717f",
+          "name": "Submit a crawl",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/crawl",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crawl"
+              ]
+            },
+            "description": "Crawl a site. The `jobId` is saved for the next request.\n\nDocs: [https://anakin.io/docs/api-reference/crawl/submit-crawl-job](https://anakin.io/docs/api-reference/crawl/submit-crawl-job)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"maxPages\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const value = body?.jobId;",
+                  "if (value) { pm.collectionVariables.set('crawlJobId', value); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "258df239-6abe-557a-b1d8-cee06291c0f0",
+          "name": "Get crawl result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/crawl/{{crawlJobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crawl",
+                "{{crawlJobId}}"
+              ]
+            },
+            "description": "Send again until `status` is `completed`.\n\nDocs: [https://anakin.io/docs/api-reference/crawl/get-crawl-result](https://anakin.io/docs/api-reference/crawl/get-crawl-result)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

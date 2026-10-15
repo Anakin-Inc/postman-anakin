@@ -1,51 +1,58 @@
-# Postman API Network — submission instructions
+# Publishing Anakin on the Postman API Network
 
-## What's ready
+Route (from Postman's docs, checked 15 Oct 2026):
+[prepare a public workspace](https://learning.postman.com/docs/postman-api-network/showcase/prepare/public-workspace/)
+with an *API reference collection* and an *overview collection*, then
+[change the workspace type to public](https://learning.postman.com/docs/postman-api-network/showcase/publish/public-apis/).
+A public workspace and its collections appear on the API Network. Depending on plan and
+role, a Community Manager on our own team may need to approve the switch. There is no
+Postman-side review for listing; the optional
+[verified publisher badge](https://learning.postman.com/docs/postman-api-network/showcase/prepare/verify-publisher-team/)
+is a separate application (domain verification, then Postman reviews).
 
-`wire-webapp/public/openapi.yaml` is a complete, real OpenAPI 3.1 spec for
-the **Wire API** (`api.openwire.sh/v1/wire` — discover/run pre-built actions
-across hundreds of sites, plus identities/login). It's the actual source of
-truth already used to build the Wire docs, not something drafted for this
-submission — importing it into Postman is close to the entire task.
+## What's built (this repo)
 
-## What's NOT ready — scope gap worth fixing before or alongside this
+- `collections/anakin-api.postman_collection.json`: API reference, 70 requests / 13 folders.
+- `collections/anakin-quickstart.postman_collection.json`: overview, first 200 OK with no key.
+- `environments/anakin.postman_environment.json`: `baseUrl`, `apiKey` (secret, empty).
 
-**Only Wire has a machine-readable spec.** The core product surface —
-`url-scraper`, `search`, `crawl`, `map`, `monitoring`, `browser-connect`,
-`browser-sessions`, `agentic-search`, `ai-visibility` — is documented as
-hand-written `.mdx` pages under `webapp/content/docs/api-reference/`, not an
-OpenAPI file. A Postman collection built only from the Wire spec covers one
-product surface, not "Anakin's API" as a whole — worth flagging to whoever
-owns the Postman listing before publishing it as *the* Anakin collection,
-since it'll read as complete when it's partial.
+Verified 15 Oct 2026: both collections validate against the Collection v2.1 schema; the
+keyless quickstart folder and Wire discovery run green against `api.anakin.io` with
+newman; all 65 keyed routes reach Anakin's auth layer (401 with a dummy key). Keyed
+requests have not been run with a real key yet (`ANAKIN_API_KEY=... npm test`).
 
-Two ways to close that gap, not attempted here (out of scope for a
-same-day submission task, and risks drifting from the real API if hand-
-authored from docs rather than generated from the Go handlers):
-1. Generate one from `api/`'s Fiber handlers (e.g. `swaggo/swag` annotations
-   → `swag init`) — stays in sync with the real routes automatically.
-2. Hand-author a second OpenAPI file mirroring the `.mdx` docs — faster
-   short-term, drifts the moment an endpoint changes and nobody updates it.
+## Steps (needs a Postman account owned by Anakin)
 
-## Steps to publish what's ready (needs the account owner)
+1. Sign in at https://www.postman.com with the company account (or create a team
+   **Anakin**, team URL handle `anakin` if free, else `anakin-io`).
+2. Team profile (https://www.postman.com/settings/team/general or *Team settings*):
+   name **Anakin**, website `https://anakin.io`, logo from the brand kit, description:
+   > Web data API: scrape any URL into Markdown or JSON, search, crawl and map sites, and run Wire actions on 940+ sites. Free tier, no card.
+   Turn the public team profile on.
+3. **Workspaces → Create workspace** → Blank → name **Anakin API**, type *Internal*
+   (switch to Public in step 7). Summary:
+   > Official Anakin collections: scrape, search, crawl, map, agentic search and Wire actions across 940+ sites.
+4. In the workspace: **Import** → drop the 3 files above (from the repo, or these raw URLs
+   once the branch is merged:
+   `https://raw.githubusercontent.com/Anakin-Inc/postman-anakin/main/collections/anakin-api.postman_collection.json`,
+   `.../collections/anakin-quickstart.postman_collection.json`,
+   `.../environments/anakin.postman_environment.json`).
+5. Select the **Anakin** environment. Run **Anakin Quickstart → 1. No key needed** (the
+   three requests should return 200). Leave `apiKey` empty before publishing: Postman's
+   secret scanner replaces keys anyway, but don't rely on it.
+6. Workspace **Overview** tab: paste the Quickstart collection description, add link
+   `https://anakin.io/docs/api-reference`.
+7. Workspace settings → **Visibility / Workspace type → Public** → submit (approve the
+   request if Postman asks a team admin to).
+8. Send back: the public workspace URL and both collection URLs (Share → Copy link), and
+   the **Run in Postman** button embed for the Quickstart collection (collection → Share →
+   Via Run in Postman).
+9. Optional, worth doing: **Public API Network → Settings → Postman verification**
+   (https://www.postman.com/publisher/settings/verification), verify the `anakin.io`
+   domain, **Submit for review**. Postman answers by email to the team admin.
 
-1. Confirm `openapi.yaml` is actually served at a stable public URL (checked
-   2026-07-27: `openwire.sh/openapi.yaml` and `api.openwire.sh/openapi.yaml`
-   both 404 — the file exists in `wire-webapp/public/` but isn't confirmed
-   deployed at either path; verify the actual deployed URL, or import the
-   local file directly as a one-time upload instead of a URL reference).
-2. In Postman: **Import** → OpenAPI 3.1 → point at the confirmed URL (or
-   upload the file directly if no stable URL exists yet).
-3. Postman generates a collection from the spec automatically — review the
-   generated request names/folders match the spec's `tags` (Discovery,
-   Tasks, Identities) before publishing.
-4. **Publish to API Network**: workspace → the imported API → Publish →
-   fill in the network listing (name, description, docs link to
-   `anakin.io/docs`).
-5. Set up a **workspace** (`Anakin` team workspace) if one doesn't exist yet,
-   so the published API has a home other than a personal workspace.
+## After it's public
 
-## Not done
-
-Requires a Postman account under the account owner and confirming the
-spec's live URL — nobody has run the import/publish flow yet.
+- Add the Run in Postman button to the anakin.io docs (blueprint-scribe-35, integration
+  install guides PR #1855, `webapp/content/docs/integrations/...`).
+- Keep in sync: edit `scripts/build.py`, rebuild, re-import into the workspace (replace).
